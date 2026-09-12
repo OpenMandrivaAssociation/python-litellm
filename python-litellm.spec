@@ -8,7 +8,9 @@ URL:		https://github.com/BerriAI/litellm
 Source0:	https://files.pythonhosted.org/packages/source/l/litellm/litellm-%{version}.tar.gz
 BuildArch:	noarch
 # METADATA pins floors/ceilings cooker will not match exactly
-%global __requires_exclude ^python[0-9.]*dist\\(
+# Rich deps look like "(python3.14dist(foo) < 9 with ...)" so do not
+# anchor at start-of-string.
+%global __requires_exclude python[0-9.]*dist
 BuildRequires:	python
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python%{pyver}dist(pip)
