@@ -35,6 +35,21 @@ llama-server and Ollama as well as cloud APIs.
 
 %prep
 %autosetup -n litellm-%{version}
+# sdist uses maturin for an optional 24MB rust bridge. Aider only
+# needs the Python SDK; the loader already treats a missing _native
+# as None. Build with setuptools so this stays noarch and offline.
+sed -i \
+	-e 's/requires = \["maturin==1.9.4"\]/requires = ["setuptools"]/' \
+	-e 's/build-backend = "maturin"/build-backend = "setuptools.build_meta"/' \
+	pyproject.toml
+cat >> pyproject.toml << 'EOF'
+
+[tool.setuptools.packages.find]
+include = ["litellm", "litellm.*"]
+
+[tool.setuptools.package-data]
+"*" = ["*"]
+EOF
 
 %build
 
