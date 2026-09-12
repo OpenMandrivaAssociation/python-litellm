@@ -43,16 +43,20 @@ python -m pip install \
 	--no-deps --no-build-isolation --no-compile \
 	--root %{buildroot} --prefix %{_prefix} \
 	.
-if [ -f %{buildroot}%{_bindir}/litellm ]; then
-	sed -i '1s|^#!/usr/bin/env python3|#!/usr/bin/python|' \
-		%{buildroot}%{_bindir}/litellm
-	sed -i '1s|^#!/usr/bin/python3|#!/usr/bin/python|' \
-		%{buildroot}%{_bindir}/litellm
-fi
+for cmd in litellm lite litellm-proxy; do
+	if [ -f %{buildroot}%{_bindir}/$cmd ]; then
+		sed -i '1s|^#!/usr/bin/env python3|#!/usr/bin/python|' \
+			%{buildroot}%{_bindir}/$cmd
+		sed -i '1s|^#!/usr/bin/python3|#!/usr/bin/python|' \
+			%{buildroot}%{_bindir}/$cmd
+	fi
+done
 
 %files
 %doc README.md
 %license LICENSE
 %{_bindir}/litellm
+%{_bindir}/lite
+%{_bindir}/litellm-proxy
 %{py_sitedir}/litellm
 %{py_sitedir}/litellm-*.*-info
