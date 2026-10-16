@@ -1,6 +1,6 @@
 Name:		python-litellm
 Version:	1.100.1
-Release:	1
+Release:	2
 Summary:	Call 100+ LLM APIs with the OpenAI format
 License:	MIT
 Group:		Development/Python
@@ -8,7 +8,7 @@ URL:		https://github.com/BerriAI/litellm
 Source0:	https://files.pythonhosted.org/packages/source/l/litellm/litellm-%{version}.tar.gz
 BuildArch:	noarch
 # METADATA pins floors/ceilings cooker will not match exactly
-# Rich deps look like "(python3.14dist(foo) < 9 with ...)" so do not
+# Rich deps look like "(pythonX.Ydist(foo) < 9 with ...)" so do not
 # anchor at start-of-string.
 %global __requires_exclude python[0-9.]*dist
 BuildRequires:	python
@@ -37,6 +37,8 @@ llama-server and Ollama as well as cloud APIs.
 
 %prep
 %autosetup -n litellm-%{version}
+# 1.100.1 stops at Python 3.14. Cooker is 3.15.
+sed -i 's/requires-python = ">=3.10, <3.15"/requires-python = ">=3.10"/' pyproject.toml
 # sdist uses maturin for an optional 24MB rust bridge. Aider only
 # needs the Python SDK; the loader already treats a missing _native
 # as None. Build with setuptools so this stays noarch and offline.
